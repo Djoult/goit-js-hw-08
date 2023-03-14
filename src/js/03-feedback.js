@@ -1,4 +1,6 @@
 import _throttle from 'lodash.throttle';
+import Notiflix from 'notiflix';
+
 const form = document.querySelector('.feedback-form');
 const email = form.querySelector('input');
 const message = form.querySelector('textarea');
@@ -21,10 +23,6 @@ function handleFormInput(e) {
 function handlePageLoad() {
   const savedData = JSON.parse(localStorage.getItem(FORM_KEY));
   if (savedData) {
-    // for (let key in savedData) {
-    //    console.log(key[value]);
-    //    [`${key}`].value = savedData[key];
-    // }
     email.value = savedData.email;
     message.value = savedData.message;
   }
@@ -33,6 +31,15 @@ function handlePageLoad() {
 function handleFormSubmit(e) {
   e.preventDefault();
   const data = JSON.parse(localStorage.getItem(FORM_KEY));
+
+  if (data.email === '' || data.message === '') {
+    Notiflix.Report.warning(
+      'Warning',
+      'You should fill all fields',
+      'Continue'
+    );
+    return;
+  }
   console.log(data);
   localStorage.removeItem(FORM_KEY);
   e.currentTarget.reset();
